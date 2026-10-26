@@ -12,18 +12,19 @@
 ---
 
 ## Table des matières
-
+ 
 1. [Introduction et objectifs](#1-introduction-et-objectifs)
 2. [Environnement de travail](#2-environnement-de-travail)
 3. [Partie A : Conception du service](#3-partie-a--conception-du-service)
 4. [Partie B : Création du projet Maven](#4-partie-b--création-du-projet-maven)
 5. [Test préliminaire : Hello World](#5-test-préliminaire--hello-world)
 6. [Partie C : Premier service REST, la somme](#6-partie-c--premier-service-rest--la-somme)
-7. [Partie D : Soustraction et produit](#7-partie-d--soustraction-et-produit)
-8. [Récapitulatif des tests](#8-récapitulatif-des-tests)
-9. [Conclusion](#9-conclusion)
-10. [Annexe : structure du dépôt](#10-annexe--structure-du-dépôt)
-
+7. [Partie D : Soustraction, produit et division](#7-partie-d--soustraction-produit-et-division)
+8. [Partie E : Échanger des données en JSON](#8-partie-e--échanger-des-données-en-json)
+9. [Partie F : La ressource operations (POST, GET, PUT, DELETE)](#9-partie-f--la-ressource-operations-post-get-put-delete)
+10. [Questions de synthèse](#10-questions-de-synthèse)
+11. [Récapitulatif des tests](#11-récapitulatif-des-tests)
+12. [Conclusion](#12-conclusion)
 ---
 
 ## 1. Introduction et objectifs
