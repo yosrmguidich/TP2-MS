@@ -7,7 +7,7 @@
 | **Filière** | MPSRCC1 |
 | **Année universitaire** | 2026-2027 |
 | **Enseignantes** | Corinne Amel ZAYANI, Amal ABID |
-| **Réalisé par** | *(Nom Prénom)* |
+| **Réalisé par** | *Mguidich Yosr* |
 
 ---
 
