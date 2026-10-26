@@ -104,6 +104,7 @@ Le code **404 (Not Found)**, qui signale que la ressource demandée n'existe pas
 ### B.1 Création du projet dans IntelliJ IDEA
 
 ![Fenêtre New Project, générateur Jakarta EE](images/1.png)
+
 *Figure 1 : fenêtre New Project (générateur Jakarta EE)*
 Sur l'écran suivant : version **Jakarta EE 10**, dépendances du modèle conservées, puis **Create**.
 
@@ -112,6 +113,7 @@ Sur l'écran suivant : version **Jakarta EE 10**, dépendances du modèle conser
 Le paquetage `com.exemple.rest` est créé dans `src/main/java`.
 
 ![Structure du projet dans IntelliJ](images/2.png)
+
 *Figure 2 : structure du projet générée par le modèle (HelloApplication et HelloResource)*
 
 ### B.3 Configuration du `pom.xml`
@@ -193,6 +195,7 @@ Le modèle crée une configuration d'exécution nommée **Tomcat 10.1.61** (`Run
 - **Onglet Deployment** : artefact déployé au démarrage, `RestWebApp:war exploded`. C'est l'application sous forme de **dossier non compressé**, pratique en développement.
 
 ![Configuration Tomcat, onglet Server](images/3.png)
+
 *Figure 3 : configuration Tomcat, onglet Server*
 
 
@@ -216,6 +219,7 @@ http://localhost:8080/RestWebApp_war_exploded/api/hello-world
 **Test avec le navigateur**
 
 ![Hello World dans le navigateur](images/4.png)
+
 *Figure 4 : la page affiche « Hello, World! »*
 
 **Test avec curl**
@@ -225,6 +229,7 @@ curl -i "http://localhost:8080/RestWebApp_war_exploded/api/hello-world"
 ```
 
 ![Hello World avec curl](images/5.png)
+
 *Figure 5 : réponse `HTTP/1.1 200`, `Content-Type: text/plain`, corps `Hello, World!`*
 
 **Résultat : le serveur est opérationnel, Jersey démarre et l'annotation JAX-RS est bien prise en compte.**
@@ -335,6 +340,7 @@ Résultat attendu : `BUILD SUCCESS` et le fichier `target/RestWebApp.war`.
 **Avec IntelliJ :** menu `Build > Build Project`, ou `Build > Build Artifacts...`.
 
 ![Menu Build d'IntelliJ](images/6.png)
+
 *Figure 6 : menu Build d'IntelliJ IDEA*
 
 ### C.5 Déploiement dans Tomcat
@@ -365,7 +371,8 @@ http://localhost:8080/RestWebApp/api/calcul/somme?a=2&b=3
 URL : `BASE/calcul/somme?a=2&b=3`. Résultat attendu : la page affiche `5`.
 
 ![Test somme navigateur](images/7.png)
-*Figure 10 : somme dans le navigateur, résultat 5*
+
+*Figure 7 : somme dans le navigateur, résultat 5*
 
 **b) Avec Postman**
 
@@ -375,7 +382,8 @@ URL : `BASE/calcul/somme?a=2&b=3`. Résultat attendu : la page affiche `5`.
 4. Observation du corps (`5`), du statut (`200 OK`) et de l'onglet **Headers**
 
 ![Test somme Postman](images/8.png)
-*Figure 12 : somme avec Postman, 200 OK et corps 5*
+
+*Figure 8 : somme avec Postman, 200 OK et corps 5*
 
 ### Question C.1 : que se passe-t-il avec POST à la place de GET ?
 
@@ -424,10 +432,12 @@ curl -i "http://localhost:8080/RestWebApp_war_exploded/api/calcul/produit?a=6&b=
 ```
 
 ![Test soustraction](images/9.png)
-*Figure 14 : soustraction `a=10&b=4`, statut 200, résultat 6*
+
+*Figure 9 : soustraction `a=10&b=4`, statut 200, résultat 6*
 
 ![Test produit](images/10.png)
-*Figure 15 : produit `a=6&b=7`, statut 200, résultat 42*
+
+*Figure 10 : produit `a=2&b=3`, statut 200, résultat 6*
 ### D.2 Division et gestion d'erreur
  
 #### Le problème : la division par zéro
@@ -488,10 +498,12 @@ curl -i "http://localhost:8080/RestWebApp_war_exploded/api/calcul/division?a=7&b
 ```
  
 ![Division 7 par 2, curl](images/11.png)
-*Figure 14a : division `a=7&b=2`, statut 200, corps `3.5`*
+
+*Figure 11 : division `a=7&b=2`, statut 200, corps `3.5`*
  
 ![Division par zéro, curl](images/12.png)
-*Figure 14b : division `a=7&b=0`, statut 400, corps `Erreur : division par 0 impossible`*
+
+*Figure 12 : division `a=7&b=0`, statut 400, corps `Erreur : division par 0 impossible`*
  
  
 #### Observations
@@ -511,10 +523,12 @@ Deux requêtes ont été envoyées pour observer le comportement de JAX-RS.
 *(À confirmer et compléter avec vos propres captures.)*
 
 ![Paramètre b absent](images/13.png)
-*Figure 16 : somme avec `b` absent*
+
+*Figure 13 : somme avec `b` absent*
 
 ![Paramètre a invalide](images/14.png)
-*Figure 17 : somme avec `a=abc`*
+
+*Figure 14 : somme avec `a=abc`*
 
 **Question D.1 : quelle valeur JAX-RS donne-t-il à un paramètre entier absent ?**
 Pour un type primitif (`int`), JAX-RS affecte la **valeur par défaut Java, `0`**. Ici, `somme?a=2` calcule `2 + 0 = 2`. On peut imposer une autre valeur avec `@DefaultValue`, ou utiliser `Integer` pour recevoir `null`.
@@ -622,10 +636,6 @@ Résultat attendu :
 ```json
 {"a":2,"b":3,"operation":"somme","resultat":5.0}
 ```
-
- 
-![Somme détaillée dans le navigateur](images/15.png)
-*Figure E3 : la même URL dans le navigateur affiche le JSON*
  
 #### Question E.1 : qui a effectué la conversion en JSON ? D'où viennent les noms `a`, `b`, `operation` et `resultat` ?
  
@@ -660,11 +670,11 @@ curl -i -H "Accept: application/xml" "http://localhost:8080/RestWebApp_war_explo
 | 1 | `application/json` | **200** | Le JSON est renvoyé |
 | 2 | `application/xml` | **406 Not Acceptable** | Aucun corps utile : le serveur refuse |
  
-![Accept application/json](images/16.png)
-*Figure E4 : `Accept: application/json`, statut 200 et corps JSON*
+![Accept application/json](images/15.png)
+*Figure 15 : `Accept: application/json`, statut 200 et corps JSON*
  
-![Accept application/xml](images/17.png)
-*Figure E5 : `Accept: application/xml`, statut 406 Not Acceptable*
+![Accept application/xml](images/16.png)
+*Figure 16 : `Accept: application/xml`, statut 406 Not Acceptable*
  
 **Avec Postman :** onglet **Headers** de la requête, ajouter la ligne `Accept` avec la valeur `application/json`, puis `application/xml`. Postman envoie par défaut `Accept: */*`, qui accepte tous les formats.
  
@@ -710,11 +720,13 @@ Tests :
  "http://localhost:8080/RestWebApp_war_exploded/api/calcul/division/detail?a=7&b=0"
 ```
  
-![divisionDetail, cas normal](images/18.png)
-*Figure E6 : `division/detail?a=7&b=2`, statut 200 et JSON avec `resultat` à 3.5*
+![divisionDetail, cas normal](images/17.png)
+
+*Figure 17 : `division/detail?a=7&b=2`, statut 200 et JSON avec `resultat` à 3.5*
  
-![divisionDetail, division par zéro](images/19.png)
-*Figure E7 : `division/detail?a=7&b=0`, statut 400 et message d'erreur JSON*
+![divisionDetail, division par zéro](images/18.png)
+
+*Figure 18 : `division/detail?a=7&b=0`, statut 400 et message d'erreur JSON*
  
 ### Bilan de la partie E
  
@@ -901,8 +913,9 @@ Comme **plusieurs requêtes peuvent arriver en même temps** (plusieurs threads)
 1. Choisir le verbe **POST** et l'URL `{{base_url}}/operations`.
 2. Ouvrir l'onglet **Body**, sélectionner **raw**, puis le type **JSON**.
 3. Saisir le corps `{"operateur":"somme","a":8,"b":2}` et cliquer sur **Send**.
-![Création avec Postman](images/20.png)
-*Figure F2 : création avec Postman (onglet Body en raw / JSON), statut 201 Created*
+![Création avec Postman](images/19.png)
+
+*Figure 19 : création avec Postman (onglet Body en raw / JSON), statut 201 Created*
  
 #### Série de tests
  
@@ -918,23 +931,25 @@ Toutes les URI sont à préfixer par `BASE` (`http://localhost:8080/RestWebApp_w
 | 6 | `POST /operations` | `{"operateur":"division","a":7,"b":0}` | **400** | `{"erreur":"Calcul impossible"}` | F7 |
 | 7 | `POST /operations` | `{"operateur":"racine","a":9,"b":0}` | **400** | `{"erreur":"Calcul impossible"}` | F8 |
  
-![Test 2 : création d'une division](images/21.png)
-*Figure F3 : test 2, création d'une division, statut 201, id 2, résultat 3.5*
+![Test 2 : création d'une division](images/20.png)
+
+*Figure 20 : test 2, création d'une division, statut 201, id 2, résultat 3.5*
  
-![Test 3 : liste des opérations](images/22.png)
-*Figure F4 : test 3, `GET /operations`, statut 200, tableau JSON*
+![Test 3 : liste des opérations](images/21.png)
+
+*Figure 21 : test 3, `GET /operations`, statut 200, tableau JSON*
  
-![Test 4 : lecture de l'opération 2](images/23.png)
-*Figure F5 : test 4, `GET /operations/2`, statut 200*
+![Test 4 : lecture de l'opération 2](images/22.png)
+
+*Figure 22 : test 4, `GET /operations/2`, statut 200*
  
-![Test 5 : identifiant inexistant](images/24.png)
-*Figure F6 : test 5, `GET /operations/99`, statut 404, corps vide*
+![Test 5 : identifiant inexistant](images/23.png)
+
+*Figure 23 : test 5, `GET /operations/99`, statut 404, corps vide*
  
-![Test 6 : division par zéro](images/25.png)
-*Figure F7 : test 6, division par 0, statut 400 et message d'erreur*
- 
-![Test 7 : opérateur inconnu](images/26.png)
-*Figure F8 : test 7, opérateur `racine` inconnu, statut 400*
+![Test 6 : division par zéro](images/24.png)
+
+*Figure 24 : test 6, division par 0, statut 400 et message d'erreur*
  
 #### Observations
  
@@ -999,15 +1014,18 @@ curl -i -X PUT -H "Content-Type: application/json" -d '{"operateur":"division","
 | 3 | `PUT /operations/99` | `{"operateur":"somme","a":1,"b":1}` | **404** | Corps vide | F11 |
 | 4 | `PUT /operations/1` | `{"operateur":"division","a":1,"b":0}` | **400** | `{"erreur":"Calcul impossible"}` | F12 |
  
-![PUT réussi](images/27.png)
-*Figure F9 : `PUT /operations/1` avec `somme`, statut 200, résultat 16.0*
+![PUT réussi](images/25.png)
+
+*Figure 25 : `PUT /operations/1` avec `somme`, statut 200, résultat 16.0*
  
  
-![PUT sur un id inexistant](images/28.png)
-*Figure F11 : `PUT /operations/99`, statut 404*
+![PUT sur un id inexistant](images/26.png)
+
+*Figure 26 : `PUT /operations/99`, statut 404*
  
-![PUT avec calcul impossible](images/29.png)
-*Figure F12 : `PUT /operations/1` avec division par 0, statut 400*
+![PUT avec calcul impossible](images/27.png)
+
+*Figure 27 : `PUT /operations/1` avec division par 0, statut 400*
  
 ### F.5 Supprimer une opération : DELETE
  
@@ -1049,11 +1067,13 @@ curl -i -X DELETE "http://localhost:8080/RestWebApp_war_exploded/api/operations/
 | 2 | `GET /operations/1` | **404** | Elle n'existe plus | F14 |
 | 3 | `DELETE /operations/1` | **404** | Il n'y a plus rien à supprimer | F15 |
  
-![DELETE réussi](images/30.png)
-*Figure F13 : `DELETE /operations/1`, statut 204, corps vide*
+![DELETE réussi](images/28.png)
+
+*Figure 28 : `DELETE /operations/1`, statut 204, corps vide*
  
-![GET après DELETE](images/31.png)
-*Figure F14 : `GET /operations/1` après la suppression, statut 404*
+![GET après DELETE](images/29.png)
+
+*Figure 29 : `GET /operations/1` après la suppression, statut 404*
  
  
 L'identifiant supprimé n'est **pas réutilisé** : le compteur continue (la prochaine création aura l'id 3), ce qui évite qu'un ancien lien `/operations/1` désigne par erreur une nouvelle opération.
