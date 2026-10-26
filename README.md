@@ -998,16 +998,14 @@ curl -i -X PUT -H "Content-Type: application/json" -d '{"operateur":"division","
 | 3 | `PUT /operations/99` | `{"operateur":"somme","a":1,"b":1}` | **404** | Corps vide | F11 |
 | 4 | `PUT /operations/1` | `{"operateur":"division","a":1,"b":0}` | **400** | `{"erreur":"Calcul impossible"}` | F12 |
  
-![PUT réussi](images/F9-put-200.png)
-*Figure F9 : `PUT /operations/1` avec `produit`, statut 200, résultat 16.0*
+![PUT réussi](images/27.png)
+*Figure F9 : `PUT /operations/1` avec `somme`, statut 200, résultat 16.0*
  
-![Vérification après PUT](images/F10-get-apres-put.png)
-*Figure F10 : `GET /operations/1` après la modification*
  
-![PUT sur un id inexistant](images/F11-put-404.png)
+![PUT sur un id inexistant](images/28.png)
 *Figure F11 : `PUT /operations/99`, statut 404*
  
-![PUT avec calcul impossible](images/F12-put-400.png)
+![PUT avec calcul impossible](images/29.png)
 *Figure F12 : `PUT /operations/1` avec division par 0, statut 400*
  
 ### F.5 Supprimer une opération : DELETE
@@ -1050,14 +1048,12 @@ curl -i -X DELETE "http://localhost:8080/RestWebApp_war_exploded/api/operations/
 | 2 | `GET /operations/1` | **404** | Elle n'existe plus | F14 |
 | 3 | `DELETE /operations/1` | **404** | Il n'y a plus rien à supprimer | F15 |
  
-![DELETE réussi](images/F13-delete-204.png)
+![DELETE réussi](images/30.png)
 *Figure F13 : `DELETE /operations/1`, statut 204, corps vide*
  
-![GET après DELETE](images/F14-get-apres-delete.png)
+![GET après DELETE](images/31.png)
 *Figure F14 : `GET /operations/1` après la suppression, statut 404*
  
-![DELETE répété](images/F15-delete-404.png)
-*Figure F15 : second `DELETE /operations/1`, statut 404*
  
 L'identifiant supprimé n'est **pas réutilisé** : le compteur continue (la prochaine création aura l'id 3), ce qui évite qu'un ancien lien `/operations/1` désigne par erreur une nouvelle opération.
  
@@ -1263,308 +1259,8 @@ Il n'y a **aucune session** : si le serveur oubliait « qui a fait quoi », le s
  
 ---
  
-## 11. Tests avec Postman
  
-**Postman** est un client HTTP graphique. Contrairement au navigateur (limité à GET), il permet de choisir n'importe quel verbe, d'ajouter des paramètres, des en-têtes et un corps, et de **vérifier automatiquement** les réponses avec des scripts. Cette section regroupe l'ensemble des tests du service avec Postman.
- 
-### 11.1 Préparation
- 
-**a) Créer une collection**
- 
-1. Dans Postman : **New > Collection**, nom : `TP2 - Calculatrice REST`.
-2. Toutes les requêtes seront rangées dans cette collection.
-**b) Définir une variable d'environnement de collection**
- 
-Pour ne pas répéter l'adresse du serveur dans chaque requête, on crée une variable `base_url` (onglet **Variables** de la collection) :
- 
-| Variable | Valeur |
-|---|---|
-| `base_url` | `http://localhost:8080/RestWebApp_war_exploded/api` |
- 
-Chaque requête utilise ensuite `{{base_url}}/calcul/somme`. Si le contexte change (par exemple `/RestWebApp` avec un `.war` déposé dans `webapps`), il suffit de modifier cette variable.
- 
-![Collection Postman et variable base_url](images/19-postman-collection.png)
-*Figure 19 : collection `TP2 - Calculatrice REST` et variable `base_url`*
- 
-### 11.2 Liste des requêtes testées
- 
-| N° | Nom de la requête | Verbe | URL | Statut attendu | Corps attendu |
-|---|---|---|---|---|---|
-| 1 | Hello World | GET | `{{base_url}}/hello-world` | 200 | `Hello, World!` |
-| 2 | Somme | GET | `{{base_url}}/calcul/somme?a=2&b=3` | 200 | `5` |
-| 3 | Somme avec POST | POST | `{{base_url}}/calcul/somme?a=2&b=3` | 405 | vide |
-| 4 | Soustraction | GET | `{{base_url}}/calcul/soustraction?a=10&b=4` | 200 | `6` |
-| 5 | Produit | GET | `{{base_url}}/calcul/produit?a=6&b=7` | 200 | `42` |
-| 6 | Produit avec `@PathParam` | GET | `{{base_url}}/calcul/produit/6/7` | 200 | `42` |
-| 7 | Somme, `b` absent | GET | `{{base_url}}/calcul/somme?a=2` | 200 | `2` |
-| 8 | Somme, `a` non entier | GET | `{{base_url}}/calcul/somme?a=abc&b=3` | 404 | non exécutée |
-| 9 | Division | GET | `{{base_url}}/calcul/division?a=7&b=2` | 200 | `3.5` |
-| 10 | Division par zéro | GET | `{{base_url}}/calcul/division?a=7&b=0` | 400 | `Erreur : division par 0 impossible` |
-| 11 | Somme détaillée (JSON) | GET | `{{base_url}}/calcul/somme/detail?a=2&b=3` (`Accept: application/json`) | 200 | `{"a":2,"b":3,"operation":"somme","resultat":5.0}` |
-| 12 | Somme détaillée, Accept XML | GET | `{{base_url}}/calcul/somme/detail?a=2&b=3` (`Accept: application/xml`) | 406 | non acceptable |
-| 13 | Division détaillée (JSON) | GET | `{{base_url}}/calcul/division/detail?a=7&b=2` | 200 | `{"a":7,"b":2,"operation":"division","resultat":3.5}` |
-| 14 | Division détaillée par zéro | GET | `{{base_url}}/calcul/division/detail?a=7&b=0` | 400 | `{"erreur":"Division par 0 impossible"}` |
-| 15 | Créer une somme | POST | `{{base_url}}/operations` | 201 | `{"a":8,"b":2,"id":1,"operateur":"somme","resultat":10.0}` + en-tête `Location` |
-| 16 | Créer une division | POST | `{{base_url}}/operations` | 201 | opération d'id 2, résultat `3.5` |
-| 17 | Lister les opérations | GET | `{{base_url}}/operations` | 200 | tableau JSON des opérations |
-| 18 | Lire une opération | GET | `{{base_url}}/operations/{{op2}}` | 200 | l'opération n° 2 |
-| 19 | Lire un id inexistant | GET | `{{base_url}}/operations/99` | 404 | vide |
-| 20 | Créer, division par 0 | POST | `{{base_url}}/operations` | 400 | `{"erreur":"Calcul impossible"}` |
-| 21 | Créer, opérateur inconnu | POST | `{{base_url}}/operations` | 400 | `{"erreur":"Calcul impossible"}` |
-| 22 | Modifier une opération | PUT | `{{base_url}}/operations/{{op1}}` | 200 | `resultat` à `16.0` |
-| 23 | Relire après modification | GET | `{{base_url}}/operations/{{op1}}` | 200 | opération n° 1 modifiée |
-| 24 | Modifier un id inexistant | PUT | `{{base_url}}/operations/99` | 404 | vide |
-| 25 | Modifier, calcul impossible | PUT | `{{base_url}}/operations/{{op1}}` | 400 | `{"erreur":"Calcul impossible"}` |
-| 26 | Supprimer une opération | DELETE | `{{base_url}}/operations/{{op1}}` | 204 | vide |
-| 27 | Relire après suppression | GET | `{{base_url}}/operations/{{op1}}` | 404 | vide |
-| 28 | Supprimer à nouveau | DELETE | `{{base_url}}/operations/{{op1}}` | 404 | vide |
- 
-### 11.3 Procédure d'envoi d'une requête
- 
-Exemple avec la **somme** :
- 
-1. Dans la collection : **Add request**, nom `Somme`.
-2. Choisir le verbe **GET**.
-3. Saisir l'URL `{{base_url}}/calcul/somme`.
-4. Ouvrir l'onglet **Params** et ajouter deux lignes :
-   | Key | Value |
-   |---|---|
-   | `a` | `2` |
-   | `b` | `3` |
-   Postman reconstruit automatiquement l'URL `…/calcul/somme?a=2&b=3`.
-5. Cliquer sur **Send**.
-6. Observer dans la partie réponse :
-   - **Body** : `5`
-   - **Status** : `200 OK`
-   - **Headers** : `Content-Type: text/plain`
-   - le temps de réponse et la taille.
-![Postman, requête Somme](images/20-postman-somme.png)
-*Figure 20 : requête GET Somme, statut 200 OK, corps `5`*
- 
-On répète la même procédure pour les autres requêtes.
- 
-**Soustraction** (`a=10`, `b=4`, résultat attendu `6`) :
- 
-![Postman, requête Soustraction](images/21-postman-soustraction.png)
-*Figure 21 : requête GET Soustraction, statut 200 OK, corps `6`*
- 
-**Produit** (`a=6`, `b=7`, résultat attendu `42`) :
- 
-![Postman, requête Produit](images/22-postman-produit.png)
-*Figure 22 : requête GET Produit, statut 200 OK, corps `42`*
- 
-**Produit avec `@PathParam`** : les valeurs sont placées dans le chemin (`/calcul/produit/6/7`), sans onglet Params :
- 
-![Postman, produit avec PathParam](images/23-postman-produit-chemin.png)
-*Figure 23 : requête GET `/calcul/produit/6/7`, statut 200 OK, corps `42`*
- 
-**Division** (`a=7`, `b=2`, résultat attendu `3.5`) et **division par zéro** (`a=7`, `b=0`, statut attendu **400** avec le message d'erreur) :
- 
-![Postman, division](images/23a-postman-division.png)
-*Figure 23a : requête GET Division, statut 200 OK, corps `3.5`*
- 
-![Postman, division par zéro](images/23b-postman-division-zero.png)
-*Figure 23b : requête GET Division par zéro, statut 400 Bad Request, corps `Erreur : division par 0 impossible`*
- 
-**Réponses JSON** (requêtes 11 à 14, partie E) : pour demander du JSON, ajouter dans l'onglet **Headers** la ligne `Accept` = `application/json`. Pour provoquer le **406**, remplacer la valeur par `application/xml`.
- 
-![Postman, somme détaillée en JSON](images/23c-postman-somme-detail.png)
-*Figure 23c : requête GET `/calcul/somme/detail`, statut 200 OK, corps JSON (onglet Body en mode Pretty)*
- 
-![Postman, Accept XML, 406](images/23d-postman-accept-xml-406.png)
-*Figure 23d : même requête avec `Accept: application/xml`, statut 406 Not Acceptable*
- 
-### 11.4 Test d'un verbe non autorisé (POST)
- 
-1. Dupliquer la requête `Somme` et la renommer `Somme avec POST`.
-2. Changer le verbe **GET** en **POST**.
-3. Cliquer sur **Send**.
-Résultat : statut **405 Method Not Allowed**. L'URI `/calcul/somme` existe, mais aucune méthode Java n'y répond au verbe POST. La réponse contient l'en-tête `Allow` qui indique les verbes acceptés (onglet **Headers** de la réponse).
- 
-![Postman, POST sur somme, 405](images/24-postman-post-405.png)
-*Figure 24 : requête POST sur `/calcul/somme`, statut 405*
- 
-### 11.5 Test des paramètres absents et invalides
- 
-| Requête | Statut | Explication |
-|---|---|---|
-| `somme?a=2` (b absent) | 200, corps `2` | `b` prend la valeur par défaut de `int` (0), donc 2 + 0 |
-| `somme?a=abc&b=3` | 404 | `"abc"` ne peut pas être converti en `int`, la méthode n'est pas exécutée |
- 
-![Postman, paramètre absent](images/25-postman-param-absent.png)
-*Figure 25 : somme avec `b` absent (200, corps `2`)*
- 
-![Postman, paramètre invalide](images/26-postman-param-invalide.png)
-*Figure 26 : somme avec `a=abc` (404)*
- 
-### 11.6 Tests automatiques avec l'onglet « Tests »
- 
-Postman exécute un script JavaScript après chaque réponse. Il permet de **valider automatiquement** le statut, le type de contenu et le corps, au lieu de vérifier visuellement. Dans l'onglet **Tests** de la requête `Somme` :
- 
-```javascript
-pm.test("Statut 200 OK", function () {
-    pm.response.to.have.status(200);
-});
- 
-pm.test("Content-Type est text/plain", function () {
-    pm.response.to.have.header("Content-Type");
-    pm.expect(pm.response.headers.get("Content-Type")).to.include("text/plain");
-});
- 
-pm.test("Le résultat de 2 + 3 est 5", function () {
-    pm.expect(pm.response.text()).to.eql("5");
-});
-```
- 
-Pour la requête `Division par zéro` (le test vérifie le statut **et** le message d'erreur) :
- 
-```javascript
-pm.test("Statut 400 Bad Request", function () {
-    pm.response.to.have.status(400);
-});
- 
-pm.test("Message d'erreur correct", function () {
-    pm.expect(pm.response.text()).to.eql("Erreur : division par 0 impossible");
-});
-```
- 
-Pour la requête `Division` (7 ÷ 2) :
- 
-```javascript
-pm.test("Statut 200 OK", function () {
-    pm.response.to.have.status(200);
-});
- 
-pm.test("7 / 2 = 3.5", function () {
-    pm.expect(pm.response.text()).to.eql("3.5");
-});
-```
- 
-Pour la requête `Somme détaillée (JSON)` (le test lit le corps comme un objet JSON) :
- 
-```javascript
-pm.test("Statut 200 OK", function () {
-    pm.response.to.have.status(200);
-});
- 
-pm.test("Content-Type est application/json", function () {
-    pm.expect(pm.response.headers.get("Content-Type")).to.include("application/json");
-});
- 
-pm.test("Le JSON contient le bon détail", function () {
-    var json = pm.response.json();
-    pm.expect(json.operation).to.eql("somme");
-    pm.expect(json.a).to.eql(2);
-    pm.expect(json.b).to.eql(3);
-    pm.expect(json.resultat).to.eql(5);
-});
-```
- 
-Pour la requête `Somme détaillée, Accept XML` :
- 
-```javascript
-pm.test("Statut 406 Not Acceptable", function () {
-    pm.response.to.have.status(406);
-});
-```
- 
-Pour la requête `Somme avec POST` :
- 
-```javascript
-pm.test("Statut 405 Method Not Allowed", function () {
-    pm.response.to.have.status(405);
-});
-```
- 
-Après **Send**, l'onglet **Test Results** de la réponse affiche chaque test en **PASS** (vert) ou **FAIL** (rouge).
- 
-![Résultats des tests Postman](images/27-postman-test-results.png)
-*Figure 27 : onglet Test Results, tous les tests passent*
- 
-### 11.7 Exécution de toute la collection (Collection Runner)
- 
-1. Clic droit sur la collection, puis **Run collection**.
-2. Cocher les 28 requêtes (ou seulement le dossier `Partie F - operations`, à exécuter dans l'ordre), puis **Run**.
-3. Postman les exécute à la suite et affiche le bilan : requêtes réussies, tests passés ou échoués, temps de réponse.
-![Collection Runner](images/28-postman-runner.png)
-*Figure 28 : exécution de la collection avec le Collection Runner*
- 
-### 11.8 Import de la collection fournie
- 
-Le fichier `postman/TP2-Calculatrice.postman_collection.json` du dépôt contient les 28 requêtes avec leurs tests (les 14 premières, puis le dossier `Partie F - operations`). Pour l'utiliser : **Import** dans Postman, puis sélection du fichier. Vérifier la valeur de la variable `base_url` avant de lancer les requêtes.
- 
-### 11.9 Tests de la ressource `operations` (partie F)
- 
-Les requêtes 15 à 28 testent la ressource `operations` avec les quatre verbes. Elles sont rangées dans un **dossier** de la collection, `Partie F - operations`, et doivent être **exécutées dans l'ordre**.
- 
-**Création avec Postman (POST) :**
- 
-1. Verbe **POST**, URL `{{base_url}}/operations`.
-2. Onglet **Body**, option **raw**, type **JSON**.
-3. Corps : `{"operateur":"somme","a":8,"b":2}`. Postman ajoute l'en-tête `Content-Type: application/json`.
-4. **Send** : statut **201 Created**, corps JSON, en-tête `Location` dans l'onglet **Headers**.
-**Variables `op1` et `op2` :** pour ne pas dépendre de la numérotation (qui repart de 1 à chaque redéploiement), les tests des deux premiers POST **enregistrent l'id reçu** dans des variables de collection :
- 
-```javascript
-pm.test("Statut 201 Created", function () {
-    pm.response.to.have.status(201);
-});
- 
-pm.test("En-tête Location présent", function () {
-    pm.expect(pm.response.headers.get("Location")).to.include("/operations/");
-});
- 
-pm.test("Résultat de 8 + 2 = 10", function () {
-    var json = pm.response.json();
-    pm.expect(json.resultat).to.eql(10);
-    pm.collectionVariables.set("op1", json.id);
-});
-```
- 
-Les requêtes suivantes utilisent `{{op1}}` et `{{op2}}` dans l'URL (par exemple `{{base_url}}/operations/{{op1}}`).
- 
-Exemple de test pour le **PUT** :
- 
-```javascript
-pm.test("Statut 200 OK", function () {
-    pm.response.to.have.status(200);
-});
- 
-pm.test("Résultat de 8 x 2 = 16", function () {
-    var json = pm.response.json();
-    pm.expect(json.operateur).to.eql("produit");
-    pm.expect(json.resultat).to.eql(16);
-});
-```
- 
-Exemple de test pour le **DELETE** :
- 
-```javascript
-pm.test("Statut 204 No Content", function () {
-    pm.response.to.have.status(204);
-});
- 
-pm.test("Corps vide", function () {
-    pm.expect(pm.response.text()).to.eql("");
-});
-```
- 
-![Collection Runner, partie F](images/F16-postman-runner-operations.png)
-*Figure F16 : exécution du dossier `Partie F - operations` avec le Collection Runner, tous les tests passent*
- 
-### 11.10 Conclusion sur Postman
- 
-| Critère | Navigateur | curl | Postman |
-|---|---|---|---|
-| Verbes autres que GET | Non | Oui (`-X`) | Oui |
-| Affichage du statut et des en-têtes | Limité | Oui (`-i`) | Oui, interface graphique |
-| Paramètres, en-têtes, corps JSON | Non | Oui, en ligne de commande | Oui, onglets dédiés |
-| Tests automatiques | Non | Non (sauf script externe) | Oui (onglet Tests, Runner) |
-| Sauvegarde et partage des requêtes | Non | Non | Oui (collections) |
- 
----
- 
-## 12. Récapitulatif des tests
+## 11. Récapitulatif des tests
  
 | Fonction | Requête | Statut | Résultat |
 |---|---|---|---|
@@ -1599,7 +1295,7 @@ pm.test("Corps vide", function () {
  
 ---
  
-## 13. Conclusion
+## 12. Conclusion
  
 Ce TP nous a permis de :
  
@@ -1614,24 +1310,4 @@ Ce TP nous a permis de :
 - **tester** le service avec le navigateur, curl et Postman, et **interpréter les codes de statut** : 200 (succès), 201 (créé), 204 (pas de contenu), 400 (requête incorrecte), 404 (ressource ou paramètre non trouvé), 405 (verbe non autorisé), 406 (format de réponse non acceptable).
 Toutes les parties du TP sont traitées. Les réponses aux questions de synthèse figurent à la [section 10](#10-questions-de-synthèse).
  
----
- 
-## 14. Annexe : structure du dépôt
- 
-```
-TP2-MS/
-├── README.md
-├── images/                 (captures d'écran citées dans ce compte rendu)
-├── pom.xml
-└── src/
-    └── main/
-        └── java/
-            └── com/exemple/rest/
-                ├── Calculatrice.java       (logique métier)
-                ├── RestApplication.java    (activation de JAX-RS)
-                ├── CalculRest.java         (ressource /calcul)
-                ├── Resultat.java           (objet renvoyé en JSON)
-                ├── Operation.java          (objet de l'historique)
-                └── OperationRest.java      (ressource /operations)
-```
- 
+
